@@ -27,6 +27,8 @@ python -m pip install --upgrade pip
 
 pip install -r requirements.txt
 
+## - Set up all enviromental variables
+
 ## - Make migrations
 python manage.py makemigrations
 
@@ -35,4 +37,5 @@ python manage.py migrate
 ## - Run server
 python manage.py runserver
 
-# API docs could be found in index.html
+# API docs could be found here:
+http://127.0.0.1:8000/openapi/
