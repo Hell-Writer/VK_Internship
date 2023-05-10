@@ -35,4 +35,4 @@ python manage.py migrate
 ## - Run server
 python manage.py runserver
 
-# API docs could be found here in index.html
+# API docs could be found in index.html
