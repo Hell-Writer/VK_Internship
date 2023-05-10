@@ -1,7 +1,5 @@
 from rest_framework import serializers
-from .models import User, Follow, Friendship, FRequest
-from rest_framework.relations import SlugRelatedField
-from rest_framework.validators import UniqueTogetherValidator
+from .models import User, Friendship, FRequest
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -17,35 +15,6 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ['username', 'password']
         model = User
-
-
-class FollowSerializer(serializers.ModelSerializer):
-    follower = serializers.SlugRelatedField(
-        default=serializers.CurrentUserDefault(),
-        queryset=User.objects.all(),
-        slug_field='username',
-    )
-    following = serializers.SlugRelatedField(
-        queryset=User.objects.all(),
-        slug_field='username')
-
-    class Meta:
-        fields = ['follower', 'following']
-        model = Follow
-        validators = [
-            UniqueTogetherValidator(
-                queryset=Follow.objects.all(),
-                fields=('follower', 'following'),
-                message='Вы уже подписаны'
-            )
-        ]
-
-    def validate(self, data):
-        if self.context['request'].user == data['following']:
-            raise serializers.ValidationError(
-                'Нельзя отправить заявку в друзья себе'
-            )
-        return data
 
 
 class FriendshipSerializer(serializers.ModelSerializer):
@@ -72,6 +41,13 @@ class FRequestSerializer(serializers.ModelSerializer):
     reciever = serializers.SlugRelatedField(
         queryset=User.objects.all(),
         slug_field='username')
+
+    def validate(self, data):
+        if self.context['request'].user == data['following']:
+            raise serializers.ValidationError(
+                'Нельзя отправить заявку в друзья себе'
+            )
+        return data
 
     class Meta:
         fields = ['giver', 'reciever']
